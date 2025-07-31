@@ -1,0 +1,40 @@
+{
+  "user_agent": "CustomSearchBot/1.0",
+  "crawl_delay": 1,
+  "max_pages_per_site": 100,
+  "follow_internal_links": true,
+  "respect_robots_txt": true,
+  "timeout": 10,
+  "max_retries": 3,
+  "allowed_content_types": [
+    "text/html",
+    "application/xhtml+xml"
+  ],
+  "excluded_extensions": [
+    ".pdf",
+    ".doc",
+    ".docx",
+    ".xls",
+    ".xlsx",
+    ".ppt",
+    ".pptx",
+    ".zip",
+    ".rar",
+    ".exe",
+    ".dmg"
+  ],
+  "solr": {
+    "url": "http://localhost:8984/solr/search_collection",
+    "batch_size": 100
+  },
+  "logging": {
+    "level": "INFO",
+    "max_file_size": "10MB",
+    "backup_count": 5
+  },
+  "crawl_schedule": {
+    "enabled": true,
+    "frequency": "daily",
+    "time": "02:00"
+  }
+}
