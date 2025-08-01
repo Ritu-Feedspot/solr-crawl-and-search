@@ -14,37 +14,42 @@ require_once '../utils/sanitize.php';
 function handleSearch() {
     try {
         $input = json_decode(file_get_contents('php://input'), true);
-        
+
         if (!$input || !isset($input['query'])) {
             throw new Exception('Query parameter is required');
         }
-        
-        $query = sanitizeInput($input['query']);
+
+        $query = $input['query'];  // DSL can be an array, don't sanitize
         $start = isset($input['start']) ? intval($input['start']) : 0;
         $rows = isset($input['rows']) ? intval($input['rows']) : 10;
-        $sort = isset($input['sort']) ? sanitizeInput($input['sort']) : null;
-        
-        // Prepare Python script arguments
+        $sort = isset($input['sort']) ? $input['sort'] : null;
+
         $args = [
-            'query' => $query,
             'start' => $start,
             'rows' => $rows
         ];
-        
+
+        // Detect DSL vs simple search
+        if (is_array($query) && isset($query['conditions'])) {
+            $args['dsl_query'] = $query;
+        } else {
+            $args['query'] = sanitizeInput($query);  // Only sanitize simple strings
+        }
+
         if ($sort) {
             $args['sort'] = $sort;
         }
-        
-        // Call Python query script
-        $pythonScript = '../../backend-search-engine/query/query_solr.py';
+
+        // Call Python script
+        $pythonScript = "C:/RITU/solr-search-engine/backend-search-engine/query/query_solr_cloud.py";
         $result = callPythonScript($pythonScript, $args);
-        
+
         if ($result === false) {
             throw new Exception('Failed to execute search');
         }
-        
+
         echo $result;
-        
+
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode([
@@ -54,6 +59,7 @@ function handleSearch() {
         ]);
     }
 }
+
 
 function handleGet() {
     $query = isset($_GET['q']) ? sanitizeInput($_GET['q']) : '';
@@ -75,7 +81,7 @@ function handleGet() {
         'rows' => $rows
     ];
     
-    $pythonScript = '../../backend-search-engine/query/query_solr.py';
+    $pythonScript = 'C:/RITU/solr-search-engine/backend-search-engine/query/query_solr_cloud.py';
     $result = callPythonScript($pythonScript, $args);
     
     if ($result === false) {

@@ -183,7 +183,7 @@ if __name__ == "__main__":
         "https://www.theguardian.com/world"
     ]
     
-    crawled_data = crawler.crawl_site(start_urls, max_pages=50)
+    crawled_data = crawler.crawl_site(start_urls, max_pages=150)
     crawler.save_data(crawled_data)
 
 

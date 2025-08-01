@@ -1,3 +1,15 @@
 2025-07-31 17:09:21,191 - INFO - Loading 50 documents from ../data\crawled_data_20250731_165631.json
 2025-07-31 17:09:25,774 - INFO - Indexed batch 1: 50 documents (50/50)
 2025-07-31 17:09:28,574 - INFO - Successfully indexed and committed 50 documents
+2025-08-01 11:17:53,955 - INFO - Loading 150 documents from ../data\crawled_data_20250801_111458.json
+2025-08-01 11:17:58,533 - INFO - Indexed batch 1: 100 documents (100/150)
+2025-08-01 11:18:00,846 - INFO - Indexed batch 2: 50 documents (150/150)
+2025-08-01 11:18:03,141 - INFO - Successfully indexed and committed 150 documents
+2025-08-01 12:18:00,660 - INFO - Loading 150 documents from ../data\crawled_data_20250801_111458.json
+2025-08-01 12:18:04,997 - INFO - Indexed batch 1: 100 documents (100/150)
+2025-08-01 12:18:07,238 - INFO - Indexed batch 2: 50 documents (150/150)
+2025-08-01 12:18:09,541 - INFO - Successfully indexed and committed 150 documents
+2025-08-01 12:22:51,814 - INFO - Loading 150 documents from ../data\crawled_data_20250801_111458.json
+2025-08-01 12:22:56,116 - INFO - Indexed batch 1: 100 documents (100/150)
+2025-08-01 12:22:58,336 - INFO - Indexed batch 2: 50 documents (150/150)
+2025-08-01 12:23:00,589 - INFO - Successfully indexed and committed 150 documents

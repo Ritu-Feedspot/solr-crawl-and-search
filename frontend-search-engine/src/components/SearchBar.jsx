@@ -37,10 +37,12 @@ export default function SearchBar({ onSearch, loading }) {
   }
 
   const handleSuggestionClick = (suggestion) => {
-    setQuery(suggestion)
-    setShowSuggestions(false)
-    onSearch(suggestion)
-  }
+      const plainText = suggestion.replace(/<[^>]*>/g, "") // Remove all HTML tags
+      setQuery(plainText)
+      setShowSuggestions(false)
+      onSearch(plainText)
+    }
+
 
   return (
     <div className="search-bar">
@@ -62,9 +64,11 @@ export default function SearchBar({ onSearch, loading }) {
         {showSuggestions && suggestions.length > 0 && (
           <div className="suggestions">
             {suggestions.map((suggestion, index) => (
-              <div key={index} className="suggestion-item" onClick={() => handleSuggestionClick(suggestion)}>
-                {suggestion}
-              </div>
+              <div key={index} className="suggestion-item" onClick={() => handleSuggestionClick(suggestion)}
+              dangerouslySetInnerHTML={{ __html: suggestion }}
+              />
+              //   {suggestion}
+              // </div>
             ))}
           </div>
         )}

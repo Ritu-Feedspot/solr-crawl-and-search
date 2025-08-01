@@ -6,7 +6,7 @@ export default function RootLayout({ children }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Custom Search Engine</title>
+        <title>Solr Search Engine</title>
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body>

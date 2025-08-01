@@ -14,39 +14,35 @@ require_once '../utils/sanitize.php';
 function handleAutocomplete() {
     try {
         $query = isset($_GET['q']) ? sanitizeInput($_GET['q']) : '';
-        $field = isset($_GET['field']) ? sanitizeInput($_GET['field']) : 'title';
+        $field = isset($_GET['field']) ? sanitizeInput($_GET['field']) : 'title_suggest';
         $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 5;
-        
-        if (empty($query)) {
+
+        if (empty($query) || strlen($query) < 2) {
             echo json_encode(['suggestions' => []]);
             return;
         }
-        
-        if (strlen($query) < 2) {
-            echo json_encode(['suggestions' => []]);
-            return;
-        }
-        
+
         $args = [
             'query' => $query,
             'field' => $field,
             'limit' => $limit,
             'autocomplete' => true
         ];
-        
-        $pythonScript = '../../backend-search-engine/query/query_solr.py';
+
+        $pythonScript = "C:/RITU/solr-search-engine/backend-search-engine/query/query_solr_cloud.py";
         $result = callPythonScript($pythonScript, $args);
-        
+
         if ($result === false) {
             throw new Exception('Failed to get autocomplete suggestions');
         }
-        
+
         echo $result;
-        
+
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode([
-            'error' => $e->getMessage(),
+            'status' => 'error',
+            'message' => $e->getMessage(),
             'suggestions' => []
         ]);
     }

@@ -20,17 +20,33 @@ function handleDSLSearch() {
         }
         
         // Validate DSL structure
-        if (!isset($input['conditions']) || !is_array($input['conditions'])) {
+        // if (!isset($input['conditions']) || !is_array($input['conditions'])) {
+        //     throw new Exception('DSL conditions are required');
+        // }
+
+        $payload = isset($input['query']) ? $input['query'] : $input;
+
+        if (!isset($payload['conditions']) || !is_array($payload['conditions'])) {
             throw new Exception('DSL conditions are required');
         }
-        
+
         // Sanitize DSL query
-        $dslQuery = sanitizeDSLQuery($input);
+        $dslQuery = sanitizeDSLQuery($payload);
+
+        
+        // // Sanitize DSL query
+        // $dslQuery = sanitizeDSLQuery($input);
         
         // Call Python DSL query script
-        $pythonScript = '../../backend-search-engine/query/query_solr.py';
-        $result = callPythonScript($pythonScript, ['dsl_query' => $dslQuery]);
-        
+        // $pythonScript = "C:/RITU/solr-search-engine/backend-search-engine/query/query_solr_cloud.py";
+        // $result = callPythonScript($pythonScript, ['dsl_query' => $dslQuery]);
+
+        $pythonScript = "C:/RITU/solr-search-engine/backend-search-engine/query/query_solr_cloud.py";
+        $pythonArgs = ['dsl_query' => $dslQuery];
+        error_log("Sending to Python: " . json_encode($pythonArgs));
+        $result = callPythonScript($pythonScript, $pythonArgs);
+
+
         if ($result === false) {
             throw new Exception('Failed to execute DSL search');
         }
