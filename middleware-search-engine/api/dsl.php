@@ -19,41 +19,50 @@ function handleDSLSearch() {
             throw new Exception('Invalid JSON input');
         }
         
-        // Validate DSL structure
-        // if (!isset($input['conditions']) || !is_array($input['conditions'])) {
-        //     throw new Exception('DSL conditions are required');
-        // }
+        // Handle nested query structure from frontend
+        $dslQuery = null;
+        if (isset($input['query']) && is_array($input['query'])) {
+            // Frontend sends: {query: {conditions: [...], sort: {...}}, facets: {}, start: 0, rows: 10}
+            $dslQuery = $input['query'];
+        } else if (isset($input['conditions'])) {
+            // Direct DSL structure: {conditions: [...], sort: {...}}
+            $dslQuery = $input;
+        } else {
+            throw new Exception('DSL query structure not found');
+        }
 
-        $payload = isset($input['query']) ? $input['query'] : $input;
-
-        if (!isset($payload['conditions']) || !is_array($payload['conditions'])) {
+        if (!isset($dslQuery['conditions']) || !is_array($dslQuery['conditions'])) {
             throw new Exception('DSL conditions are required');
         }
 
-        // Sanitize DSL query
-        $dslQuery = sanitizeDSLQuery($payload);
+        // Add pagination from top level
+        $dslQuery['start'] = isset($input['start']) ? intval($input['start']) : 0;
+        $dslQuery['rows'] = isset($input['rows']) ? intval($input['rows']) : 10;
 
-        
-        // // Sanitize DSL query
-        // $dslQuery = sanitizeDSLQuery($input);
+        // Add facets from top level input to dslQuery
+        if (isset($input['facets']) && is_array($input['facets'])) {
+            $dslQuery['facets'] = $input['facets'];
+        }
+
+        // Sanitize DSL query
+        $sanitizedQuery = sanitizeDSLQuery($dslQuery);
         
         // Call Python DSL query script
-        // $pythonScript = "C:/RITU/solr-search-engine/backend-search-engine/query/query_solr_cloud.py";
-        // $result = callPythonScript($pythonScript, ['dsl_query' => $dslQuery]);
-
         $pythonScript = "C:/RITU/solr-search-engine/backend-search-engine/query/query_solr_cloud.py";
-        $pythonArgs = ['dsl_query' => $dslQuery];
-        error_log("Sending to Python: " . json_encode($pythonArgs));
+        $pythonArgs = ['dsl_query' => $sanitizedQuery];
+        
+        error_log("DSL Query being sent to Python: " . json_encode($pythonArgs));
+        
         $result = callPythonScript($pythonScript, $pythonArgs);
 
-
         if ($result === false) {
-            throw new Exception('Failed to execute DSL search');
+            throw new Exception('Failed to execute DSL search - Python script error');
         }
         
         echo $result;
         
     } catch (Exception $e) {
+        error_log("DSL Search Error: " . $e->getMessage());
         http_response_code(500);
         echo json_encode([
             'error' => $e->getMessage(),
@@ -101,6 +110,20 @@ function sanitizeDSLQuery($input) {
         }
     }
     
+    // Sanitize facets
+    if (isset($input['facets']) && is_array($input['facets'])) {
+        $sanitized['facets'] = [];
+        foreach ($input['facets'] as $facetField => $facetValues) {
+            $sanitizedFacetField = sanitizeInput($facetField);
+            $sanitized['facets'][$sanitizedFacetField] = [];
+            if (is_array($facetValues)) {
+                foreach ($facetValues as $value) {
+                    $sanitized['facets'][$sanitizedFacetField][] = sanitizeInput($value);
+                }
+            }
+        }
+    }
+
     // Add pagination
     $sanitized['start'] = isset($input['start']) ? intval($input['start']) : 0;
     $sanitized['rows'] = isset($input['rows']) ? intval($input['rows']) : 10;

@@ -15,23 +15,27 @@ function callPythonScript($scriptPath, $args = []) {
             $command .= ' ' . escapeshellarg($jsonArgs);
         }
 
+        error_log("Executing command: $command");
+
         $output = [];
         $returnCode = 0;
         exec($command . ' 2>&1', $output, $returnCode);
 
         $result = implode("\n", $output);
+        error_log("Python output: $result");
+        error_log("Return code: $returnCode");
 
         if ($returnCode !== 0) {
             error_log("Python script failed with code $returnCode: $result");
             return false;
         }
 
-        // Ensure it's valid JSON before returning
         $decoded = json_decode($result, true);
         if (json_last_error() === JSON_ERROR_NONE) {
             return json_encode($decoded); // Re-encode for safety
         } else {
             error_log("Invalid JSON from Python: $result");
+            error_log("JSON error: " . json_last_error_msg());
             return false;
         }
 
@@ -40,6 +44,5 @@ function callPythonScript($scriptPath, $args = []) {
         return false;
     }
 }
-
 
 ?>

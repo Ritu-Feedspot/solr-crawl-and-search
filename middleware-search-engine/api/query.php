@@ -23,24 +23,38 @@ function handleSearch() {
         $start = isset($input['start']) ? intval($input['start']) : 0;
         $rows = isset($input['rows']) ? intval($input['rows']) : 10;
         $sort = isset($input['sort']) ? $input['sort'] : null;
+        $facets = isset($input['facets']) ? $input['facets'] : []; // Extract facets
+        $semanticSearch = isset($input['semantic_search']) ? (bool)$input['semantic_search'] : false; 
 
         $args = [
             'start' => $start,
             'rows' => $rows
         ];
 
-        // Detect DSL vs simple search
-        if (is_array($query) && isset($query['conditions'])) {
+        // Detect Semantic vs DSL vs simple search
+        if ($semanticSearch) {
+            $args['semantic_search'] = true;
+            $args['query'] = sanitizeInput($query); // Query text for embedding
+        } elseif (is_array($query) && isset($query['conditions'])) {
             $args['dsl_query'] = $query;
         } else {
-            $args['query'] = sanitizeInput($query);  // Only sanitize simple strings
+            $args['query'] = sanitizeInput($query);
+            if ($sort) {
+                $args['sort'] = $sort;
+            }
         }
 
-        if ($sort) {
-            $args['sort'] = $sort;
+        // Log the arguments being sent to Python for debugging
+        error_log("Args sent to Python: " . json_encode($args));
+
+        // if ($sort) {
+        //     $args['sort'] = $sort;
+        // }
+
+        if (!empty($facets)) {
+            $args['facets'] = $facets;
         }
 
-        // Call Python script
         $pythonScript = "C:/RITU/solr-search-engine/backend-search-engine/query/query_solr_cloud.py";
         $result = callPythonScript($pythonScript, $args);
 
@@ -65,6 +79,7 @@ function handleGet() {
     $query = isset($_GET['q']) ? sanitizeInput($_GET['q']) : '';
     $start = isset($_GET['start']) ? intval($_GET['start']) : 0;
     $rows = isset($_GET['rows']) ? intval($_GET['rows']) : 10;
+    $facets = isset($_GET['facets']) ? $_GET['facets'] : []; // Extract facets
     
     if (empty($query)) {
         echo json_encode([
@@ -80,6 +95,10 @@ function handleGet() {
         'start' => $start,
         'rows' => $rows
     ];
+    
+    if (!empty($facets)) {
+        $args['facets'] = $facets;
+    }
     
     $pythonScript = 'C:/RITU/solr-search-engine/backend-search-engine/query/query_solr_cloud.py';
     $result = callPythonScript($pythonScript, $args);

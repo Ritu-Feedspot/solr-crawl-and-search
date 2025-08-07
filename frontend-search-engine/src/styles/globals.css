@@ -263,7 +263,8 @@ body {
 }
 
 .result-date,
-.result-score {
+.result-score,
+.result-domain {
   font-size: 12px;
   color: #999;
   margin-bottom: 4px;
@@ -280,6 +281,99 @@ body {
   text-align: center;
   color: #666;
   font-size: 18px;
+}
+
+/* Pagination Styles */
+.pagination {
+  padding: 20px;
+  border-top: 1px solid #e0e0e0;
+  background: #f8f9fa;
+  border-radius: 0 0 8px 8px;
+}
+
+.pagination-info {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #666;
+  font-size: 14px;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  background: white;
+  color: #333;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.pagination-btn:hover:not(.disabled) {
+  background: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.pagination-btn.disabled {
+  background: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+  border-color: #e0e0e0;
+}
+
+.pagination-numbers {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.pagination-number {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  background: white;
+  color: #333;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  min-width: 40px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.pagination-number:hover:not(.disabled):not(.ellipsis) {
+  background: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.pagination-number.active {
+  background: #3498db;
+  color: white;
+  border-color: #3498db;
+  font-weight: bold;
+}
+
+.pagination-number.ellipsis {
+  border: none;
+  background: transparent;
+  cursor: default;
+  color: #999;
+}
+
+.pagination-number.disabled {
+  background: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+  border-color: #e0e0e0;
 }
 
 /* DSL Builder Styles */
@@ -417,5 +511,18 @@ mark {
 
   .header h1 {
     font-size: 2rem;
+  }
+
+  .pagination-controls {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .pagination-numbers {
+    order: 2;
+  }
+
+  .pagination-btn {
+    order: 1;
   }
 }

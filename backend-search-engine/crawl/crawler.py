@@ -24,7 +24,7 @@ class WebCrawler:
             format='%(asctime)s - %(levelname)s - %(message)s',
             handlers=[
                 logging.FileHandler('../logs/crawler.log'),
-                logging.StreamHandler()
+                # logging.StreamHandler()
             ]
         )
         self.logger = logging.getLogger(__name__)
@@ -78,10 +78,27 @@ class WebCrawler:
             body_text = soup.get_text()
         
         # Clean up body text
-        lines = (line.strip() for line in body_text.splitlines())
-        chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-        body_text = ' '.join(chunk for chunk in chunks if chunk)
+        # lines = (line.strip() for line in body_text.splitlines())
+        # chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+        # body_text = ' '.join(chunk for chunk in chunks if chunk)
         
+        body_text = ' '.join(part.strip() for part in body_text.split() if part.strip())
+
+
+        content_blocks = []
+        for tag in soup.find_all(['article', 'section', 'main']):
+            text = tag.get_text(separator=' ', strip=True)
+            if len(text.split()) >= 30:
+                content_blocks.append(text)
+
+        if not content_blocks:
+            self.logger.warning(f"Falling back to <body>.")
+            body_tag = soup.find('body')
+            body_text = body_tag.get_text(separator= ' ', strip=True) if body_tag else soup.get_text(separator=' ', strip=True)
+
+        else: 
+            body_text= '\n\n'.join(content_blocks)
+
         # Extract links
         links = []
         for link in soup.find_all('a', href=True):

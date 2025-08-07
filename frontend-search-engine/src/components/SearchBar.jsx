@@ -11,7 +11,7 @@ export default function SearchBar({ onSearch, loading }) {
     e.preventDefault()
     if (query.trim()) {
       onSearch(query)
-      setShowSuggestions(false)
+      setShowSuggestions(false) //To hide autocomplete suggestions upon clicking search button
     }
   }
 
@@ -37,12 +37,11 @@ export default function SearchBar({ onSearch, loading }) {
   }
 
   const handleSuggestionClick = (suggestion) => {
-      const plainText = suggestion.replace(/<[^>]*>/g, "") // Remove all HTML tags
-      setQuery(plainText)
-      setShowSuggestions(false)
-      onSearch(plainText)
-    }
-
+    const plainText = suggestion.replace(/<[^>]*>/g, "") // Remove all HTML tags
+    setQuery(plainText)
+    setShowSuggestions(false)
+    onSearch(plainText)
+  }
 
   return (
     <div className="search-bar">
@@ -64,11 +63,12 @@ export default function SearchBar({ onSearch, loading }) {
         {showSuggestions && suggestions.length > 0 && (
           <div className="suggestions">
             {suggestions.map((suggestion, index) => (
-              <div key={index} className="suggestion-item" onClick={() => handleSuggestionClick(suggestion)}
-              dangerouslySetInnerHTML={{ __html: suggestion }}
+              <div
+                key={index}
+                className="suggestion-item"
+                onClick={() => handleSuggestionClick(suggestion)}
+                dangerouslySetInnerHTML={{ __html: suggestion }}
               />
-              //   {suggestion}
-              // </div>
             ))}
           </div>
         )}

@@ -13,3 +13,7 @@
 2025-08-01 12:22:56,116 - INFO - Indexed batch 1: 100 documents (100/150)
 2025-08-01 12:22:58,336 - INFO - Indexed batch 2: 50 documents (150/150)
 2025-08-01 12:23:00,589 - INFO - Successfully indexed and committed 150 documents
+2025-08-06 12:57:36,862 - INFO - Loading 150 documents from ../data/data_with_embeddings\embeddings_20250806_123301.json
+2025-08-06 12:57:41,581 - INFO - Indexed batch 1: 100 documents (100/150)
+2025-08-06 12:57:43,934 - INFO - Indexed batch 2: 50 documents (150/150)
+2025-08-06 12:57:46,194 - INFO - Successfully indexed and committed 150 documents

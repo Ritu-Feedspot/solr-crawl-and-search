@@ -56,6 +56,10 @@ class SolrCloudIndexer:
             'content_type': 'text/html',
             'domain': domain
         }
+
+        # Add embedding vector if present
+        if 'embedding_vector' in doc:
+            solr_doc['embedding_vector'] = doc['embedding_vector']
         
         return solr_doc
     
@@ -192,7 +196,9 @@ if __name__ == "__main__":
     print(json.dumps(indexer.get_collection_status(), indent=2))
     
     # Find the latest crawled data file
-    data_dir = '../data'
+    # data_dir = '../data'
+    data_dir = '../data/data_with_embeddings'
+
     if os.path.exists(data_dir):
         json_files = [f for f in os.listdir(data_dir) if f.endswith('.json')]
         if json_files:
